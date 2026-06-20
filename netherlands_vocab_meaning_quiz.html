@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Trip to the Netherlands 단어 뜻 고르기 시험</title>
+<style>
+:root{
+  --bg:#f6f1e8;--paper:#fffaf2;--ink:#172033;--muted:#667085;--line:#dfd3c3;
+  --accent:#237a5b;--gold:#d7a33d;--soft:#fff6d8;--green:#15803d;--red:#b91c1c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#fbf7ef,#f3ecdf);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo","Segoe UI",sans-serif}
+header{border-bottom:1px solid var(--line);background:radial-gradient(circle at 15% 0%,rgba(35,122,91,.18),transparent 34rem)}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 18px}
+h1{margin:0;font-size:clamp(25px,3.6vw,42px);letter-spacing:-.055em}
+.sub{margin:10px 0 0;color:var(--muted);line-height:1.65;font-weight:700}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+button{border:1px solid #d8c7b1;background:white;border-radius:999px;padding:9px 13px;font-weight:900;cursor:pointer}
+button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+button.gold{background:#fff5d6;color:#5f3b00;border-color:#edca73}
+button:disabled{opacity:.5;cursor:not-allowed}
+main{max-width:1120px;margin:0 auto;padding:18px}
+.panel{background:rgba(255,250,242,.94);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(45,35,20,.1)}
+.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.setting{background:white;border:1px solid #eadfce;border-radius:16px;padding:12px}
+.setting b{display:block;margin-bottom:8px;color:#29533f}
+select{width:100%;border:1px solid #d8c7b1;border-radius:12px;padding:9px 10px;font-weight:800;background:white}
+.progress{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:14px}
+.track{height:12px;background:white;border:1px solid var(--line);border-radius:999px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .2s}
+.score{font-weight:950;color:#29533f;white-space:nowrap}
+.quiz{display:grid;gap:14px}
+.qcard{background:#fff;border:1px solid #eadfce;border-radius:20px;padding:16px}
+.qtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+.qnum{background:#dff3e9;color:#17523c;border-radius:999px;padding:5px 10px;font-weight:950;font-size:13px}
+.term{font-family:Georgia,"Times New Roman",serif;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.hint{font-size:14px;color:#64748b;font-weight:750;line-height:1.5;margin-top:4px}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.option{border:1px solid #d8c7b1;background:#fffaf2;border-radius:14px;padding:11px 12px;text-align:left;font-weight:850;line-height:1.45}
+.option:hover{background:var(--soft)}
+.option.selected{border-color:#237a5b;background:#e6f5ee}
+.option.correct{border-color:#22c55e;background:#dcfce7;color:#14532d}
+.option.wrong{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+.result{display:none;margin-top:10px;border-radius:13px;padding:10px 12px;font-weight:850;line-height:1.55}
+.result.show{display:block}.result.good{background:#dcfce7;color:#14532d}.result.bad{background:#fee2e2;color:#991b1b}
+.summary{display:none}.summary.show{display:block}.summary h2{margin:0 0 10px}
+.bigscore{font-size:34px;font-weight:950;color:#29533f;margin:8px 0}
+.wrong-list{display:grid;gap:8px;margin-top:12px}.wrong-item{background:white;border:1px solid #eadfce;border-radius:14px;padding:10px 12px;line-height:1.6}
+.wordbook{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.word{background:white;border:1px solid #eadfce;border-radius:14px;padding:10px;line-height:1.5}.word b{color:#29533f}
+.mode-note{background:#fff6d8;border:1px solid #edca73;color:#5b3a1a;border-radius:16px;padding:12px 14px;line-height:1.6;font-weight:850}
+.hidden{display:none}
+@media(max-width:850px){.settings{grid-template-columns:1fr}.options{grid-template-columns:1fr}.wordbook{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wordbook{grid-template-columns:1fr}.term{font-size:24px}.qtop{flex-direction:column}.progress{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>A Trip to the Netherlands 단어 뜻 고르기 시험</h1>
+    <p class="sub">PDF 본문에 표시된 주요 단어·표현을 보고 알맞은 한글 뜻을 고르는 시험입니다. 듣기 없이 뜻 고르기만 됩니다.</p>
+    <div class="toolbar">
+      <button class="primary" onclick="startQuiz()">시험 시작 / 다시 섞기</button>
+      <button class="gold" onclick="checkAll()">채점하기</button>
+      <button onclick="retryWrong()" id="retryBtn" disabled>오답만 다시 풀기</button>
+      <button onclick="toggleWordbook()">단어장 보기/숨기기</button>
+      <button onclick="window.print()">인쇄하기</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <div class="settings">
+      <div class="setting">
+        <b>시험 범위</b>
+        <select id="mode">
+          <option value="core">핵심 단어만</option>
+          <option value="all">전체 단어</option>
+        </select>
+      </div>
+      <div class="setting">
+        <b>문항 수</b>
+        <select id="count">
+          <option value="20">20문항</option>
+          <option value="30" selected>30문항</option>
+          <option value="50">50문항</option>
+          <option value="999">전체</option>
+        </select>
+      </div>
+      <div class="setting">
+        <b>보기 수</b>
+        <select id="choiceCount">
+          <option value="4">4지선다</option>
+          <option value="3">3지선다</option>
+        </select>
+      </div>
+    </div>
+    <div class="progress">
+      <div class="track"><div class="bar" id="bar"></div></div>
+      <div class="score" id="score">0 / 0</div>
+    </div>
+    <p class="mode-note">추천: 처음에는 <b>핵심 단어만 · 30문항 · 4지선다</b>로 시작하고, 오답만 다시 푼 다음 전체 단어로 늘리면 됩니다.</p>
+  </section>
+
+  <section class="panel summary" id="summary"></section>
+  <section class="quiz" id="quiz"></section>
+
+  <section class="panel hidden" id="wordbookPanel">
+    <h2>단어장</h2>
+    <div class="wordbook" id="wordbook"></div>
+  </section>
+</main>
+
+<script>
+const VOCAB = [{"term": "country", "meaning": "나라, 국가", "hint": "all I knew of the country", "core": true}, {"term": "windmills", "meaning": "풍차들", "hint": "famous for windmills and tulips", "core": true}, {"term": "cycle", "meaning": "자전거를 타다", "hint": "as I cycled from place to place", "core": true}, {"term": "expect", "meaning": "예상하다, 기대하다", "hint": "things that I hadn’t expected", "core": true}, {"term": "line up", "meaning": "줄지어 있다", "hint": "old buildings lined up along the canal", "core": true}, {"term": "canal", "meaning": "운하", "hint": "a canal in Amsterdam", "core": true}, {"term": "rent", "meaning": "빌리다, 임대하다", "hint": "rent a bike", "core": true}, {"term": "enjoy", "meaning": "즐기다", "hint": "I enjoyed riding along the canal", "core": false}, {"term": "visited", "meaning": "방문객이 많은, 방문된", "hint": "one of the most visited museums", "core": true}, {"term": "house", "meaning": "보관하다, 수용하다", "hint": "It housed the secret hiding place", "core": true}, {"term": "hiding place", "meaning": "은신처, 숨는 곳", "hint": "the secret hiding place of Anne Frank", "core": true}, {"term": "bookcase", "meaning": "책장", "hint": "an old bookcase", "core": true}, {"term": "ordinary", "meaning": "평범한", "hint": "It looked ordinary", "core": true}, {"term": "steep", "meaning": "가파른", "hint": "The steep stairs", "core": true}, {"term": "passage", "meaning": "통로", "hint": "narrow passages", "core": true}, {"term": "back then", "meaning": "그 당시에는", "hint": "life must have been like back then", "core": true}, {"term": "cruise", "meaning": "유람선 여행", "hint": "a canal cruise", "core": true}, {"term": "historical value", "meaning": "역사적 가치", "hint": "great historical value", "core": true}, {"term": "angle", "meaning": "각도, 시각", "hint": "from different angles", "core": true}, {"term": "gentle", "meaning": "부드러운, 살며시 부는", "hint": "The gentle touch of the wind", "core": false}, {"term": "pleasant", "meaning": "기분 좋은, 즐거운", "hint": "made the experience even more pleasant", "core": true}, {"term": "excited", "meaning": "신이 난, 기대되는", "hint": "I was really excited to visit", "core": true}, {"term": "exhibit", "meaning": "전시품", "hint": "the way the exhibits were arranged", "core": true}, {"term": "arrange", "meaning": "배열하다, 배치하다", "hint": "were arranged to show", "core": true}, {"term": "well-known works", "meaning": "잘 알려진 작품들", "hint": "Van Gogh’s most well-known works", "core": true}, {"term": "favorite", "meaning": "가장 좋아하는 것", "hint": "my personal favorites", "core": false}, {"term": "convey", "meaning": "전하다, 전달하다", "hint": "seemed to convey a sense of relaxation", "core": true}, {"term": "relaxation", "meaning": "휴식, 편안함", "hint": "a sense of relaxation", "core": true}, {"term": "shade", "meaning": "색조, 색의 농도", "hint": "different shades of yellow", "core": true}, {"term": "amazing", "meaning": "놀라운, 굉장한", "hint": "were just amazing", "core": true}, {"term": "contrast", "meaning": "대조, 대비", "hint": "the contrast between yellow and blue", "core": true}, {"term": "wheat", "meaning": "밀", "hint": "bright yellow wheat field", "core": false}, {"term": "striking", "meaning": "인상적인, 눈에 띄는", "hint": "the contrast was striking", "core": true}, {"term": "overall", "meaning": "전반적으로, 종합하면", "hint": "Overall, seeing the artworks", "core": true}, {"term": "artwork", "meaning": "예술 작품", "hint": "seeing the artworks in person", "core": true}, {"term": "in person", "meaning": "직접, 실제로", "hint": "seeing the artworks in person", "core": true}, {"term": "display", "meaning": "전시하다, 보여 주다", "hint": "displayed the letters", "core": true}, {"term": "find out", "meaning": "알아내다", "hint": "I found out how much", "core": true}, {"term": "postcard", "meaning": "엽서", "hint": "bought a few postcards", "core": false}, {"term": "on my way back", "meaning": "돌아가는 길에", "hint": "On my way back", "core": true}, {"term": "couldn’t help but", "meaning": "~하지 않을 수 없었다", "hint": "couldn’t help but admire", "core": true}, {"term": "admire", "meaning": "감탄하다, 존경하다", "hint": "admire the views", "core": true}, {"term": "calm", "meaning": "차분한, 고요한", "hint": "beautiful, calm, and scenic views", "core": false}, {"term": "scenic", "meaning": "경치가 좋은", "hint": "scenic views of the city", "core": true}, {"term": "relaxing", "meaning": "쉬고 있는, 편안한", "hint": "people relaxing on the grass", "core": false}, {"term": "highly recommend", "meaning": "강력히 추천하다", "hint": "I highly recommend visiting", "core": true}, {"term": "traditional", "meaning": "전통적인", "hint": "traditional Dutch culture", "core": true}, {"term": "complete", "meaning": "완전한, 완성된", "hint": "wouldn’t be complete", "core": true}, {"term": "fortunately", "meaning": "다행히", "hint": "Fortunately, you can get there", "core": true}, {"term": "moment", "meaning": "순간", "hint": "The moment I saw the village", "core": true}, {"term": "village", "meaning": "마을", "hint": "I saw the village", "core": true}, {"term": "take one’s breath away", "meaning": "숨이 멎을 만큼 감동시키다", "hint": "its beauty took my breath away", "core": true}, {"term": "spinning", "meaning": "돌고 있는", "hint": "windmills were spinning", "core": true}, {"term": "in the distance", "meaning": "멀리서", "hint": "by the river in the distance", "core": true}, {"term": "past", "meaning": "과거", "hint": "a point in the past", "core": true}, {"term": "grind", "meaning": "갈다", "hint": "grinding nuts into oil", "core": true}, {"term": "nut", "meaning": "견과류", "hint": "grinding nuts into oil", "core": false}, {"term": "clog factory", "meaning": "나막신 공장", "hint": "a cheese farm and a clog factory", "core": true}, {"term": "variety", "meaning": "다양성, 여러 종류", "hint": "the variety of Dutch cheeses", "core": true}, {"term": "unsure", "meaning": "확신이 없는", "hint": "a little unsure about tasting them", "core": true}, {"term": "incredibly", "meaning": "믿을 수 없을 정도로, 매우", "hint": "incredibly satisfying", "core": true}, {"term": "satisfying", "meaning": "만족스러운", "hint": "incredibly satisfying", "core": true}, {"term": "quite", "meaning": "꽤, 상당히", "hint": "quite comfortable", "core": false}, {"term": "comfortable", "meaning": "편안한", "hint": "quite comfortable", "core": true}, {"term": "neat", "meaning": "단정한, 깔끔한", "hint": "neat rows of brick houses", "core": true}, {"term": "brick", "meaning": "벽돌", "hint": "brick houses", "core": true}, {"term": "harbor", "meaning": "항구", "hint": "The harbor was dotted with boats", "core": true}, {"term": "be dotted with", "meaning": "~이 여기저기 흩어져 있다", "hint": "was dotted with boats", "core": true}, {"term": "explore", "meaning": "탐험하다, 둘러보다", "hint": "explore Volendam", "core": true}, {"term": "owner", "meaning": "주인", "hint": "the shop owner said", "core": true}, {"term": "local", "meaning": "현지인, 지역의", "hint": "as the locals do", "core": true}, {"term": "order", "meaning": "주문하다", "hint": "I ordered one of the dishes", "core": true}, {"term": "popular", "meaning": "인기 있는", "hint": "most popular dishes", "core": true}, {"term": "absolutely", "meaning": "정말로, 굉장히", "hint": "absolutely delicious", "core": true}, {"term": "destroy", "meaning": "파괴하다", "hint": "completely destroyed", "core": true}, {"term": "restore", "meaning": "복원하다, 회복시키다", "hint": "was restored into a port city", "core": true}, {"term": "port city", "meaning": "항구 도시", "hint": "a beautiful port city", "core": true}, {"term": "experimental", "meaning": "실험적인", "hint": "Experimental and artistic constructions", "core": true}, {"term": "construction", "meaning": "건축물, 건설", "hint": "artistic constructions", "core": true}, {"term": "improve", "meaning": "개선하다", "hint": "improve the appearance", "core": true}, {"term": "appearance", "meaning": "외관, 모습", "hint": "the appearance of the city", "core": true}, {"term": "innovative", "meaning": "혁신적인", "hint": "the most innovative buildings", "core": true}, {"term": "look forward to", "meaning": "~을 고대하다", "hint": "looking forward to seeing", "core": true}, {"term": "fantastic", "meaning": "환상적인, 아주 멋진", "hint": "as fantastic as expected", "core": true}, {"term": "key feature", "meaning": "주요 특징", "hint": "One of the key features", "core": true}, {"term": "tilted", "meaning": "기울어진", "hint": "the cubes are tilted", "core": true}, {"term": "visit", "meaning": "방문하다", "hint": "I visited the museum", "core": false}, {"term": "entirely", "meaning": "완전히, 전적으로", "hint": "entirely twisted", "core": true}, {"term": "twisted", "meaning": "뒤틀린, 꼬인", "hint": "looked entirely twisted", "core": true}, {"term": "surprisingly", "meaning": "놀랍게도", "hint": "surprisingly quite comfortable", "core": true}, {"term": "charming", "meaning": "매력적인", "hint": "the charming sights", "core": true}, {"term": "sight", "meaning": "광경, 경치", "hint": "sights of the Netherlands", "core": true}, {"term": "post", "meaning": "게시글, 글", "hint": "find my post helpful", "core": true}];
+const OPTION_BASE_CODE = 9312;
+let current = [];
+let wrongTerms = [];
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+function sample(arr,n){ return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+
+function makeOptions(answer, pool, n){
+  const wrongs = shuffle(pool.filter(v => v.meaning !== answer.meaning)).slice(0,n-1).map(v=>v.meaning);
+  return shuffle([answer.meaning, ...wrongs]);
+}
+
+function startQuiz(customList=null){
+  const mode = document.getElementById('mode').value;
+  const count = Number(document.getElementById('count').value);
+  const source = customList || (mode === 'core' ? VOCAB.filter(v=>v.core) : VOCAB);
+  current = count === 999 ? shuffle(source) : sample(source, count);
+  wrongTerms = [];
+  document.getElementById('summary').classList.remove('show');
+  document.getElementById('retryBtn').disabled = true;
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const quiz = document.getElementById('quiz');
+  const choiceCount = Number(document.getElementById('choiceCount').value);
+  quiz.innerHTML = '';
+  current.forEach((q, idx)=>{
+    const options = makeOptions(q, VOCAB, choiceCount);
+    const card = document.createElement('article');
+    card.className='qcard';
+    card.dataset.answer=q.meaning;
+    card.dataset.term=q.term;
+    card.innerHTML = `
+      <div class="qtop">
+        <div>
+          <span class="qnum">${idx+1}</span>
+          <div class="term">${escapeHtml(q.term)}</div>
+          <div class="hint">본문 힌트: ${escapeHtml(q.hint)}</div>
+        </div>
+      </div>
+      <div class="options">
+        ${options.map((op,i)=>`<button class="option" onclick="selectOption(this)" data-value="${escapeAttr(op)}">${String.fromCharCode(OPTION_BASE_CODE + i)} ${escapeHtml(op)}</button>`).join('')}
+      </div>
+      <div class="result"></div>
+    `;
+    quiz.appendChild(card);
+  });
+  updateProgress(false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectOption(btn){
+  const card = btn.closest('.qcard');
+  card.querySelectorAll('.option').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateProgress(false);
+}
+
+function checkAll(){
+  if(current.length === 0) startQuiz();
+  wrongTerms = [];
+  let correct=0;
+  document.querySelectorAll('.qcard').forEach(card=>{
+    const answer = card.dataset.answer;
+    const selected = card.querySelector('.option.selected');
+    const result = card.querySelector('.result');
+    card.querySelectorAll('.option').forEach(btn=>{
+      btn.classList.remove('correct','wrong');
+      if(btn.dataset.value === answer) btn.classList.add('correct');
+    });
+    if(selected && selected.dataset.value === answer){
+      correct++;
+      result.className='result show good';
+      result.textContent='정답';
+    }else{
+      if(selected) selected.classList.add('wrong');
+      result.className='result show bad';
+      result.innerHTML=`오답 · 정답: <b>${escapeHtml(answer)}</b>`;
+      const term = VOCAB.find(v=>v.term === card.dataset.term);
+      if(term) wrongTerms.push(term);
+    }
+  });
+  showSummary(correct, current.length);
+  document.getElementById('retryBtn').disabled = wrongTerms.length === 0;
+  updateProgress(true);
+}
+
+function showSummary(correct,total){
+  const pct = total ? Math.round(correct/total*100) : 0;
+  const summary = document.getElementById('summary');
+  const wrongHtml = wrongTerms.length
+    ? `<div class="wrong-list">${wrongTerms.map(v=>`<div class="wrong-item"><b>${escapeHtml(v.term)}</b> = ${escapeHtml(v.meaning)}<br><span style="color:#667085">힌트: ${escapeHtml(v.hint)}</span></div>`).join('')}</div>`
+    : `<p class="mode-note">오답 없음. 전체 단어로 넘어가도 됩니다.</p>`;
+  summary.innerHTML = `
+    <h2>채점 결과</h2>
+    <div class="bigscore">${correct} / ${total}점 · ${pct}%</div>
+    <p style="line-height:1.7;font-weight:800;color:#4b5563">틀린 단어는 아래에서 다시 확인하고, <b>오답만 다시 풀기</b>를 눌러 한 번 더 돌리면 됩니다.</p>
+    ${wrongHtml}
+  `;
+  summary.classList.add('show');
+  summary.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function retryWrong(){
+  if(wrongTerms.length) startQuiz(wrongTerms);
+}
+
+function updateProgress(checked){
+  const cards = [...document.querySelectorAll('.qcard')];
+  let done = 0;
+  if(checked){
+    done = cards.filter(c=>c.querySelector('.result.show.good')).length;
+  }else{
+    done = cards.filter(c=>c.querySelector('.option.selected')).length;
+  }
+  document.getElementById('score').textContent = `${done} / ${cards.length}`;
+  document.getElementById('bar').style.width = cards.length ? `${done/cards.length*100}%` : '0%';
+}
+
+function toggleWordbook(){
+  const panel = document.getElementById('wordbookPanel');
+  panel.classList.toggle('hidden');
+  if(!panel.classList.contains('hidden')) renderWordbook();
+}
+
+function renderWordbook(){
+  const wb = document.getElementById('wordbook');
+  wb.innerHTML = VOCAB.map(v=>`<div class="word"><b>${escapeHtml(v.term)}</b><br>${escapeHtml(v.meaning)}<br><span style="color:#667085;font-size:13px">${escapeHtml(v.hint)}</span></div>`).join('');
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
+
+startQuiz();
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banksy Port Talbot 단어 뜻 고르기 시험</title>
+<style>
+:root{
+  --bg:#f6f1e8;--paper:#fffaf2;--ink:#172033;--muted:#667085;--line:#dfd3c3;
+  --accent:#6b4a2b;--gold:#d7a33d;--soft:#fff6d8;--green:#15803d;--red:#b91c1c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#fbf7ef,#f3ecdf);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo","Segoe UI",sans-serif}
+header{border-bottom:1px solid var(--line);background:radial-gradient(circle at 15% 0%,rgba(215,163,61,.25),transparent 34rem)}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 18px}
+h1{margin:0;font-size:clamp(25px,3.6vw,42px);letter-spacing:-.055em}
+.sub{margin:10px 0 0;color:var(--muted);line-height:1.65;font-weight:700}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+button{border:1px solid #d8c7b1;background:white;border-radius:999px;padding:9px 13px;font-weight:900;cursor:pointer}
+button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+button.gold{background:#fff5d6;color:#5f3b00;border-color:#edca73}
+button:disabled{opacity:.5;cursor:not-allowed}
+main{max-width:1120px;margin:0 auto;padding:18px}
+.panel{background:rgba(255,250,242,.94);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(45,35,20,.1)}
+.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.setting{background:white;border:1px solid #eadfce;border-radius:16px;padding:12px}
+.setting b{display:block;margin-bottom:8px;color:#5b3a1a}
+select{width:100%;border:1px solid #d8c7b1;border-radius:12px;padding:9px 10px;font-weight:800;background:white}
+.progress{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:14px}
+.track{height:12px;background:white;border:1px solid var(--line);border-radius:999px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .2s}
+.score{font-weight:950;color:#5b3a1a;white-space:nowrap}
+.quiz{display:grid;gap:14px}
+.qcard{background:#fff;border:1px solid #eadfce;border-radius:20px;padding:16px}
+.qnum{background:#efe0ca;color:#5b3a1a;border-radius:999px;padding:5px 10px;font-weight:950;font-size:13px}
+.term{font-family:Georgia,"Times New Roman",serif;font-size:28px;font-weight:800;letter-spacing:-.02em;margin-top:6px}
+.hint{font-size:14px;color:#64748b;font-weight:750;line-height:1.5;margin-top:4px}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.option{border:1px solid #d8c7b1;background:#fffaf2;border-radius:14px;padding:11px 12px;text-align:left;font-weight:850;line-height:1.45}
+.option:hover{background:var(--soft)}
+.option.selected{border-color:var(--accent);background:#fff2cc}
+.option.correct{border-color:#22c55e;background:#dcfce7;color:#14532d}
+.option.wrong{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+.result{display:none;margin-top:10px;border-radius:13px;padding:10px 12px;font-weight:850;line-height:1.55}
+.result.show{display:block}.result.good{background:#dcfce7;color:#14532d}.result.bad{background:#fee2e2;color:#991b1b}
+.summary{display:none}.summary.show{display:block}.summary h2{margin:0 0 10px}
+.bigscore{font-size:34px;font-weight:950;color:#5b3a1a;margin:8px 0}
+.wrong-list{display:grid;gap:8px;margin-top:12px}.wrong-item{background:white;border:1px solid #eadfce;border-radius:14px;padding:10px 12px;line-height:1.6}
+.wordbook{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.word{background:white;border:1px solid #eadfce;border-radius:14px;padding:10px;line-height:1.5}.word b{color:#5b3a1a}
+.mode-note{background:#fff6d8;border:1px solid #edca73;color:#5b3a1a;border-radius:16px;padding:12px 14px;line-height:1.6;font-weight:850}
+.hidden{display:none}
+@media(max-width:850px){.settings{grid-template-columns:1fr}.options{grid-template-columns:1fr}.wordbook{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wordbook{grid-template-columns:1fr}.term{font-size:24px}.progress{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>Banksy Port Talbot 단어 뜻 고르기 시험</h1>
+<p class="sub">Banksy’s New Work in Port Talbot 본문 단어를 보고 알맞은 한글 뜻을 고르는 시험입니다.</p>
+<div class="toolbar">
+<button class="primary" onclick="startQuiz()">시험 시작 / 다시 섞기</button>
+<button class="gold" onclick="checkAll()">채점하기</button>
+<button onclick="retryWrong()" id="retryBtn" disabled>오답만 다시 풀기</button>
+<button onclick="toggleWordbook()">단어장 보기/숨기기</button>
+<button onclick="window.print()">인쇄하기</button>
+<a href="index.html"><button>목록으로</button></a>
+</div></div></header>
+<main>
+<section class="panel">
+<div class="settings">
+<div class="setting"><b>시험 범위</b><select id="mode"><option value="core">핵심 단어만</option><option value="all">전체 단어</option></select></div>
+<div class="setting"><b>문항 수</b><select id="count"><option value="20">20문항</option><option value="30" selected>30문항</option><option value="50">50문항</option><option value="999">전체</option></select></div>
+<div class="setting"><b>보기 수</b><select id="choiceCount"><option value="4">4지선다</option><option value="3">3지선다</option></select></div>
+</div>
+<div class="progress"><div class="track"><div class="bar" id="bar"></div></div><div class="score" id="score">0 / 0</div></div>
+<p class="mode-note">추천: 처음에는 <b>핵심 단어만 · 30문항 · 4지선다</b>로 시작하고, 오답만 다시 푼 다음 전체 단어로 늘리면 됩니다.</p>
+</section>
+<section class="panel summary" id="summary"></section>
+<section class="quiz" id="quiz"></section>
+<section class="panel hidden" id="wordbookPanel"><h2>단어장</h2><div class="wordbook" id="wordbook"></div></section>
+</main>
+<script>
+const VOCAB = [{"term": "secretive", "meaning": "비밀스러운", "hint": "Secretive street artist Banksy", "core": true}, {"term": "street artist", "meaning": "거리 예술가", "hint": "street artist Banksy", "core": true}, {"term": "design", "meaning": "설계하다, 만들다", "hint": "Banksy designed another piece of art", "core": false}, {"term": "piece of art", "meaning": "예술 작품", "hint": "another interesting piece of art", "core": true}, {"term": "appear", "meaning": "나타나다, 보이다", "hint": "which appears on a garage", "core": true}, {"term": "concrete", "meaning": "콘크리트", "hint": "a concrete block garage", "core": false}, {"term": "garage", "meaning": "차고", "hint": "a concrete block garage", "core": true}, {"term": "catch", "meaning": "잡다, 받아먹다", "hint": "catching snowflakes", "core": true}, {"term": "snowflake", "meaning": "눈송이", "hint": "catching snowflakes with his mouth", "core": true}, {"term": "look around the corner", "meaning": "모퉁이를 돌아서 보다", "hint": "When you look around the corner", "core": false}, {"term": "however", "meaning": "하지만, 그러나", "hint": "however, you realize", "core": false}, {"term": "realize", "meaning": "깨닫다, 알아차리다", "hint": "you realize that", "core": true}, {"term": "ash", "meaning": "재", "hint": "ash coming from a dumpster fire", "core": true}, {"term": "come from", "meaning": "~에서 나오다", "hint": "coming from a dumpster fire", "core": false}, {"term": "dumpster fire", "meaning": "쓰레기통 화재", "hint": "a dumpster fire", "core": true}, {"term": "ask A to B", "meaning": "A에게 B하라고 요청하다", "hint": "Banksy was asked by Gary Owen to create art", "core": false}, {"term": "resident", "meaning": "주민", "hint": "a Port Talbot resident", "core": true}, {"term": "create", "meaning": "창작하다, 만들다", "hint": "to create art", "core": true}, {"term": "highlight", "meaning": "강조하다, 부각하다", "hint": "highlight Port Talbot’s dust problem", "core": true}, {"term": "dust problem", "meaning": "먼지 문제", "hint": "Port Talbot’s dust problem", "core": true}, {"term": "believe", "meaning": "믿다, 생각하다", "hint": "Owen believed that", "core": false}, {"term": "area", "meaning": "지역", "hint": "the area’s children", "core": false}, {"term": "face", "meaning": "직면하다", "hint": "children were facing serious health risks", "core": true}, {"term": "serious", "meaning": "심각한", "hint": "serious health risks", "core": true}, {"term": "health risk", "meaning": "건강상의 위험", "hint": "serious health risks", "core": true}, {"term": "local", "meaning": "지역의, 현지의", "hint": "the local steel plant", "core": false}, {"term": "steel plant", "meaning": "제철소", "hint": "the local steel plant", "core": true}, {"term": "particularly", "meaning": "특히", "hint": "Children are particularly defenseless", "core": false}, {"term": "defenseless", "meaning": "방어력이 약한, 무방비인", "hint": "defenseless against air pollution", "core": true}, {"term": "against", "meaning": "~에 맞서, ~에 대해", "hint": "defenseless against air pollution", "core": false}, {"term": "air pollution", "meaning": "대기 오염", "hint": "against air pollution", "core": true}, {"term": "breathing rate", "meaning": "호흡 속도", "hint": "faster breathing rates", "core": true}, {"term": "breathe in", "meaning": "들이마시다", "hint": "breathe in more pollutants", "core": true}, {"term": "pollutant", "meaning": "오염 물질", "hint": "more pollutants", "core": true}, {"term": "according to", "meaning": "~에 따르면", "hint": "According to the World Health Organization", "core": true}, {"term": "World Health Organization", "meaning": "세계보건기구", "hint": "the World Health Organization (WHO)", "core": true}, {"term": "under 15", "meaning": "15세 미만의", "hint": "children under 15", "core": false}, {"term": "toxic", "meaning": "유독한", "hint": "toxic air", "core": true}, {"term": "estimate", "meaning": "추정하다", "hint": "the WHO estimated that", "core": true}, {"term": "die from", "meaning": "~로 사망하다", "hint": "children died from exposure", "core": true}, {"term": "exposure", "meaning": "노출", "hint": "exposure to polluted air", "core": true}, {"term": "polluted air", "meaning": "오염된 공기", "hint": "polluted air", "core": false}, {"term": "include", "meaning": "포함하다", "hint": "Banksy’s art has included", "core": false}, {"term": "environmental message", "meaning": "환경적 메시지", "hint": "environmental messages", "core": true}, {"term": "for example", "meaning": "예를 들어", "hint": "For example, his 2010 artwork", "core": false}, {"term": "artwork", "meaning": "예술 작품", "hint": "his 2010 artwork", "core": true}, {"term": "remains", "meaning": "잔해, 남은 것", "hint": "the remains of a plant", "core": true}, {"term": "plant", "meaning": "공장", "hint": "a plant in Detroit", "core": true}, {"term": "show", "meaning": "보여 주다", "hint": "It showed a child", "core": false}, {"term": "can of paint", "meaning": "페인트 통", "hint": "a can of red paint", "core": false}, {"term": "remember", "meaning": "기억하다", "hint": "I remember when all this was trees", "core": true}, {"term": "move", "meaning": "옮기다", "hint": "had been moved to other places", "core": false}, {"term": "other places", "meaning": "다른 장소들", "hint": "moved to other places", "core": false}];
+const OPTION_BASE_CODE = 9312;
+let current = [];
+let wrongTerms = [];
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function sample(arr,n){ return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+function makeOptions(answer, pool, n){const wrongs=shuffle(pool.filter(v=>v.meaning!==answer.meaning)).slice(0,n-1).map(v=>v.meaning);return shuffle([answer.meaning,...wrongs]);}
+function startQuiz(customList=null){const mode=document.getElementById('mode').value;const count=Number(document.getElementById('count').value);const source=customList || (mode==='core'?VOCAB.filter(v=>v.core):VOCAB);current=count===999?shuffle(source):sample(source,count);wrongTerms=[];document.getElementById('summary').classList.remove('show');document.getElementById('retryBtn').disabled=true;renderQuiz();}
+function renderQuiz(){const quiz=document.getElementById('quiz');const choiceCount=Number(document.getElementById('choiceCount').value);quiz.innerHTML='';current.forEach((q,idx)=>{const options=makeOptions(q,VOCAB,choiceCount);const card=document.createElement('article');card.className='qcard';card.dataset.answer=q.meaning;card.dataset.term=q.term;card.innerHTML=`<span class="qnum">${idx+1}</span><div class="term">${escapeHtml(q.term)}</div><div class="hint">본문 힌트: ${escapeHtml(q.hint)}</div><div class="options">${options.map((op,i)=>`<button class="option" onclick="selectOption(this)" data-value="${escapeAttr(op)}">${String.fromCharCode(OPTION_BASE_CODE+i)} ${escapeHtml(op)}</button>`).join('')}</div><div class="result"></div>`;quiz.appendChild(card);});updateProgress(false);window.scrollTo({top:0,behavior:'smooth'});}
+function selectOption(btn){const card=btn.closest('.qcard');card.querySelectorAll('.option').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');updateProgress(false);}
+function checkAll(){if(current.length===0)startQuiz();wrongTerms=[];let correct=0;document.querySelectorAll('.qcard').forEach(card=>{const answer=card.dataset.answer;const selected=card.querySelector('.option.selected');const result=card.querySelector('.result');card.querySelectorAll('.option').forEach(btn=>{btn.classList.remove('correct','wrong');if(btn.dataset.value===answer)btn.classList.add('correct');});if(selected&&selected.dataset.value===answer){correct++;result.className='result show good';result.textContent='정답';}else{if(selected)selected.classList.add('wrong');result.className='result show bad';result.innerHTML=`오답 · 정답: <b>${escapeHtml(answer)}</b>`;const term=VOCAB.find(v=>v.term===card.dataset.term);if(term)wrongTerms.push(term);}});showSummary(correct,current.length);document.getElementById('retryBtn').disabled=wrongTerms.length===0;updateProgress(true);}
+function showSummary(correct,total){const pct=total?Math.round(correct/total*100):0;const summary=document.getElementById('summary');const wrongHtml=wrongTerms.length?`<div class="wrong-list">${wrongTerms.map(v=>`<div class="wrong-item"><b>${escapeHtml(v.term)}</b> = ${escapeHtml(v.meaning)}<br><span style="color:#667085">힌트: ${escapeHtml(v.hint)}</span></div>`).join('')}</div>`:`<p class="mode-note">오답 없음. 전체 단어로 넘어가도 됩니다.</p>`;summary.innerHTML=`<h2>채점 결과</h2><div class="bigscore">${correct} / ${total}점 · ${pct}%</div><p style="line-height:1.7;font-weight:800;color:#4b5563">틀린 단어는 아래에서 다시 확인하고, <b>오답만 다시 풀기</b>를 눌러 한 번 더 돌리면 됩니다.</p>${wrongHtml}`;summary.classList.add('show');summary.scrollIntoView({behavior:'smooth',block:'start'});}
+function retryWrong(){if(wrongTerms.length)startQuiz(wrongTerms);}
+function updateProgress(checked){const cards=[...document.querySelectorAll('.qcard')];let done=checked?cards.filter(c=>c.querySelector('.result.show.good')).length:cards.filter(c=>c.querySelector('.option.selected')).length;document.getElementById('score').textContent=`${done} / ${cards.length}`;document.getElementById('bar').style.width=cards.length?`${done/cards.length*100}%`:'0%';}
+function toggleWordbook(){const panel=document.getElementById('wordbookPanel');panel.classList.toggle('hidden');if(!panel.classList.contains('hidden'))renderWordbook();}
+function renderWordbook(){document.getElementById('wordbook').innerHTML=VOCAB.map(v=>`<div class="word"><b>${escapeHtml(v.term)}</b><br>${escapeHtml(v.meaning)}<br><span style="color:#667085;font-size:13px">${escapeHtml(v.hint)}</span></div>`).join('');}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function escapeAttr(s){return escapeHtml(s).replace(/"/g,'&quot;');}
+startQuiz();
+</script>
+</body></html>

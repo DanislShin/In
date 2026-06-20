@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Environmental Art 단어 뜻 고르기 시험</title>
+<style>
+:root{
+  --bg:#f6f1e8;--paper:#fffaf2;--ink:#172033;--muted:#667085;--line:#dfd3c3;
+  --accent:#7c4a28;--gold:#d7a33d;--soft:#fff6d8;--green:#15803d;--red:#b91c1c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#fbf7ef,#f3ecdf);color:var(--ink);
+font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo","Segoe UI",sans-serif}
+header{border-bottom:1px solid var(--line);background:radial-gradient(circle at 15% 0%,rgba(215,163,61,.27),transparent 34rem)}
+.wrap{max-width:1120px;margin:0 auto;padding:26px 18px}
+h1{margin:0;font-size:clamp(25px,3.6vw,42px);letter-spacing:-.055em}
+.sub{margin:10px 0 0;color:var(--muted);line-height:1.65;font-weight:700}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+button{border:1px solid #d8c7b1;background:white;border-radius:999px;padding:9px 13px;font-weight:900;cursor:pointer}
+button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+button.gold{background:#fff5d6;color:#5f3b00;border-color:#edca73}
+button:disabled{opacity:.5;cursor:not-allowed}
+main{max-width:1120px;margin:0 auto;padding:18px}
+.panel{background:rgba(255,250,242,.94);border:1px solid var(--line);border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 10px 24px rgba(45,35,20,.1)}
+.settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.setting{background:white;border:1px solid #eadfce;border-radius:16px;padding:12px}
+.setting b{display:block;margin-bottom:8px;color:#5b3a1a}
+select,input{width:100%;border:1px solid #d8c7b1;border-radius:12px;padding:9px 10px;font-weight:800;background:white}
+.progress{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:14px}
+.track{height:12px;background:white;border:1px solid var(--line);border-radius:999px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--gold));transition:width .2s}
+.score{font-weight:950;color:#5b3a1a;white-space:nowrap}
+.quiz{display:grid;gap:14px}
+.qcard{background:#fff;border:1px solid #eadfce;border-radius:20px;padding:16px}
+.qtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+.qnum{background:#efe0ca;color:#5b3a1a;border-radius:999px;padding:5px 10px;font-weight:950;font-size:13px}
+.term{font-family:Georgia,"Times New Roman",serif;font-size:28px;font-weight:800;letter-spacing:-.02em}
+.hint{font-size:14px;color:#64748b;font-weight:750;line-height:1.5;margin-top:4px}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}
+.option{border:1px solid #d8c7b1;background:#fffaf2;border-radius:14px;padding:11px 12px;text-align:left;font-weight:850;line-height:1.45}
+.option:hover{background:var(--soft)}
+.option.selected{border-color:#7c4a28;background:#fff2cc}
+.option.correct{border-color:#22c55e;background:#dcfce7;color:#14532d}
+.option.wrong{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+.result{display:none;margin-top:10px;border-radius:13px;padding:10px 12px;font-weight:850;line-height:1.55}
+.result.show{display:block}.result.good{background:#dcfce7;color:#14532d}.result.bad{background:#fee2e2;color:#991b1b}
+.summary{display:none}.summary.show{display:block}.summary h2{margin:0 0 10px}
+.bigscore{font-size:34px;font-weight:950;color:#5b3a1a;margin:8px 0}
+.wrong-list{display:grid;gap:8px;margin-top:12px}.wrong-item{background:white;border:1px solid #eadfce;border-radius:14px;padding:10px 12px;line-height:1.6}
+.wordbook{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.word{background:white;border:1px solid #eadfce;border-radius:14px;padding:10px;line-height:1.5}.word b{color:#5b3a1a}
+.mode-note{background:#fff6d8;border:1px solid #edca73;color:#5b3a1a;border-radius:16px;padding:12px 14px;line-height:1.6;font-weight:850}
+.hidden{display:none}
+@media(max-width:850px){.settings{grid-template-columns:1fr}.options{grid-template-columns:1fr}.wordbook{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.wordbook{grid-template-columns:1fr}.term{font-size:24px}.qtop{flex-direction:column}.progress{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Environmental Art 단어 뜻 고르기 시험</h1>
+    <p class="sub">듣기 없이, 영어 단어·표현을 보고 알맞은 한글 뜻만 고르는 시험입니다. 기초가 약한 학생도 풀 수 있게 보기 뜻을 쉽게 구성했습니다.</p>
+    <div class="toolbar">
+      <button class="primary" onclick="startQuiz()">시험 시작 / 다시 섞기</button>
+      <button class="gold" onclick="checkAll()">채점하기</button>
+      <button onclick="retryWrong()" id="retryBtn" disabled>오답만 다시 풀기</button>
+      <button onclick="toggleWordbook()">단어장 보기/숨기기</button>
+      <button onclick="window.print()">인쇄하기</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <div class="settings">
+      <div class="setting">
+        <b>시험 범위</b>
+        <select id="mode">
+          <option value="core">핵심 단어만</option>
+          <option value="all">전체 단어</option>
+        </select>
+      </div>
+      <div class="setting">
+        <b>문항 수</b>
+        <select id="count">
+          <option value="20">20문항</option>
+          <option value="30">30문항</option>
+          <option value="999">전체</option>
+        </select>
+      </div>
+      <div class="setting">
+        <b>보기 수</b>
+        <select id="choiceCount">
+          <option value="4">4지선다</option>
+          <option value="3">3지선다</option>
+        </select>
+      </div>
+    </div>
+    <div class="progress">
+      <div class="track"><div class="bar" id="bar"></div></div>
+      <div class="score" id="score">0 / 0</div>
+    </div>
+    <p class="mode-note">추천: 처음에는 <b>핵심 단어만 · 20문항 · 4지선다</b>로 시작하고, 한 번 맞힌 뒤 전체 단어로 늘리면 됩니다.</p>
+  </section>
+
+  <section class="panel summary" id="summary"></section>
+  <section class="quiz" id="quiz"></section>
+
+  <section class="panel hidden" id="wordbookPanel">
+    <h2>단어장</h2>
+    <div class="wordbook" id="wordbook"></div>
+  </section>
+</main>
+
+<script>
+const VOCAB = [{"term": "stir up", "meaning": "불러일으키다", "hint": "stir up a sense of beauty", "core": true}, {"term": "a sense of beauty", "meaning": "아름다움에 대한 감각", "hint": "a sense of beauty in us", "core": false}, {"term": "draw", "meaning": "끌어내다", "hint": "draw a reaction", "core": true}, {"term": "spirited", "meaning": "활기찬, 강한", "hint": "a spirited reaction", "core": true}, {"term": "reaction", "meaning": "반응", "hint": "a reaction from the public", "core": false}, {"term": "public", "meaning": "대중, 일반 사람들", "hint": "from the public", "core": true}, {"term": "excellent", "meaning": "뛰어난, 훌륭한", "hint": "an excellent artistic piece", "core": false}, {"term": "artistic piece", "meaning": "예술 작품", "hint": "an artistic piece", "core": true}, {"term": "communicate", "meaning": "전달하다", "hint": "communicate a message", "core": true}, {"term": "message", "meaning": "메시지", "hint": "a message to us", "core": false}, {"term": "surroundings", "meaning": "주변 환경", "hint": "looking at our surroundings", "core": true}, {"term": "essential", "meaning": "필수적인, 중요한", "hint": "an essential role", "core": true}, {"term": "role", "meaning": "역할", "hint": "played a role", "core": false}, {"term": "address", "meaning": "다루다, 해결하려고 하다", "hint": "addressing issues", "core": true}, {"term": "social issues", "meaning": "사회적 문제", "hint": "social issues", "core": false}, {"term": "global issues", "meaning": "세계적 문제", "hint": "global issues", "core": false}, {"term": "throughout history", "meaning": "역사 전반에 걸쳐", "hint": "throughout history", "core": false}, {"term": "modern artworks", "meaning": "현대 예술 작품들", "hint": "modern artworks", "core": false}, {"term": "environmental issues", "meaning": "환경 문제", "hint": "environmental issues", "core": true}, {"term": "photograph", "meaning": "사진", "hint": "a photograph by Benjamin Von Wong", "core": false}, {"term": "rally", "meaning": "결집시키다, 모이게 하다", "hint": "rally people around actions", "core": true}, {"term": "environmental actions", "meaning": "환경을 위한 행동", "hint": "environmental actions", "core": false}, {"term": "titled", "meaning": "~라는 제목의", "hint": "titled Turn Off the Plastic Tap", "core": false}, {"term": "highlight", "meaning": "강조하다, 부각하다", "hint": "highlight the fact", "core": true}, {"term": "fact", "meaning": "사실", "hint": "the fact that", "core": false}, {"term": "a huge amount of", "meaning": "엄청난 양의", "hint": "a huge amount of plastic", "core": true}, {"term": "plastic", "meaning": "플라스틱", "hint": "plastic enters the ocean", "core": false}, {"term": "enter", "meaning": "들어가다", "hint": "enters the ocean", "core": true}, {"term": "ocean", "meaning": "바다, 대양", "hint": "the ocean", "core": false}, {"term": "order", "meaning": "주문하다", "hint": "order a product online", "core": false}, {"term": "product", "meaning": "제품", "hint": "a product online", "core": false}, {"term": "deliver", "meaning": "배송하다, 배달하다", "hint": "delivered in packaging", "core": true}, {"term": "packaging", "meaning": "포장", "hint": "plastic packaging", "core": true}, {"term": "at least in part", "meaning": "적어도 부분적으로는", "hint": "at least in part", "core": false}, {"term": "dependence", "meaning": "의존", "hint": "dependence on plastic", "core": true}, {"term": "supply chain", "meaning": "공급망", "hint": "built into the supply chain", "core": true}, {"term": "individual", "meaning": "개인의, 개인", "hint": "individual consumer", "core": false}, {"term": "consumer", "meaning": "소비자", "hint": "the individual consumer", "core": true}, {"term": "opt out", "meaning": "빠지다, 벗어나다", "hint": "harder to opt out", "core": true}, {"term": "purchase", "meaning": "구매하다", "hint": "purchase products", "core": true}, {"term": "contain", "meaning": "포함하다", "hint": "products containing plastic", "core": true}, {"term": "go so far", "meaning": "효과에 한계가 있다", "hint": "that only goes so far", "core": false}, {"term": "inform", "meaning": "알리다", "hint": "inform your friends", "core": true}, {"term": "issue", "meaning": "문제, 쟁점", "hint": "the issue", "core": true}, {"term": "at the end of the day", "meaning": "결국에는", "hint": "at the end of the day", "core": false}, {"term": "government", "meaning": "정부", "hint": "companies and governments", "core": false}, {"term": "ignore", "meaning": "무시하다", "hint": "can’t ignore", "core": true}, {"term": "interest", "meaning": "관심, 이해관계", "hint": "the interest of consumers", "core": false}, {"term": "pressure", "meaning": "압력을 가하다", "hint": "pressure governments", "core": true}, {"term": "corporation", "meaning": "기업, 회사", "hint": "governments and corporations", "core": true}, {"term": "strike up", "meaning": "시작하다", "hint": "strike up conversations", "core": true}, {"term": "conversation", "meaning": "대화", "hint": "conversations about the environment", "core": false}, {"term": "make a difference", "meaning": "변화를 만들다, 영향을 주다", "hint": "make a great difference", "core": true}, {"term": "inspire", "meaning": "영감을 주다, 하도록 만들다", "hint": "inspiring us to take action", "core": true}, {"term": "take action", "meaning": "행동을 취하다", "hint": "take action", "core": true}, {"term": "following", "meaning": "다음의", "hint": "the following words", "core": false}, {"term": "ring true", "meaning": "진실하게 들리다, 와닿다", "hint": "ring especially true", "core": true}, {"term": "context", "meaning": "맥락, 상황", "hint": "in this context", "core": true}, {"term": "actually", "meaning": "실제로는", "hint": "you actually have to", "core": false}, {"term": "yourself", "meaning": "너 자신이, 스스로", "hint": "change them yourself", "core": false}];
+let current = [];
+let wrongTerms = [];
+
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function sample(arr,n){ return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+
+function makeOptions(answer, pool, n){
+  const wrongs = shuffle(pool.filter(v => v.meaning !== answer.meaning)).slice(0,n-1).map(v=>v.meaning);
+  return shuffle([answer.meaning, ...wrongs]);
+}
+
+function startQuiz(customList=null){
+  const mode = document.getElementById('mode').value;
+  const count = Number(document.getElementById('count').value);
+  const source = customList || (mode === 'core' ? VOCAB.filter(v=>v.core) : VOCAB);
+  current = count === 999 ? shuffle(source) : sample(source, count);
+  wrongTerms = [];
+  document.getElementById('summary').classList.remove('show');
+  document.getElementById('retryBtn').disabled = true;
+  renderQuiz();
+}
+
+function renderQuiz(){
+  const quiz = document.getElementById('quiz');
+  const choiceCount = Number(document.getElementById('choiceCount').value);
+  quiz.innerHTML = '';
+  current.forEach((q, idx)=>{
+    const options = makeOptions(q, VOCAB, choiceCount);
+    const card = document.createElement('article');
+    card.className='qcard';
+    card.dataset.answer=q.meaning;
+    card.dataset.term=q.term;
+    card.innerHTML = `
+      <div class="qtop">
+        <div>
+          <span class="qnum">${idx+1}</span>
+          <div class="term">${escapeHtml(q.term)}</div>
+          <div class="hint">본문 힌트: ${escapeHtml(q.hint)}</div>
+        </div>
+      </div>
+      <div class="options">
+        ${options.map((op,i)=>`<button class="option" onclick="selectOption(this)" data-value="${escapeAttr(op)}">${String.fromCharCode(OPTION_BASE_CODE + i)} ${escapeHtml(op)}</button>`).join('')}
+      </div>
+      <div class="result"></div>
+    `;
+    quiz.appendChild(card);
+  });
+  updateProgress(false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const OPTION_BASE_CODE = 9312;
+
+function selectOption(btn){
+  const card = btn.closest('.qcard');
+  card.querySelectorAll('.option').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateProgress(false);
+}
+
+function checkAll(){
+  if(current.length === 0) startQuiz();
+  wrongTerms = [];
+  let correct=0;
+  document.querySelectorAll('.qcard').forEach(card=>{
+    const answer = card.dataset.answer;
+    const selected = card.querySelector('.option.selected');
+    const result = card.querySelector('.result');
+    card.querySelectorAll('.option').forEach(btn=>{
+      btn.classList.remove('correct','wrong');
+      if(btn.dataset.value === answer) btn.classList.add('correct');
+    });
+    if(selected && selected.dataset.value === answer){
+      correct++;
+      result.className='result show good';
+      result.textContent='정답';
+    }else{
+      if(selected) selected.classList.add('wrong');
+      result.className='result show bad';
+      result.innerHTML=`오답 · 정답: <b>${escapeHtml(answer)}</b>`;
+      const term = VOCAB.find(v=>v.term === card.dataset.term);
+      if(term) wrongTerms.push(term);
+    }
+  });
+  showSummary(correct, current.length);
+  document.getElementById('retryBtn').disabled = wrongTerms.length === 0;
+  updateProgress(true);
+}
+
+function showSummary(correct,total){
+  const pct = total ? Math.round(correct/total*100) : 0;
+  const summary = document.getElementById('summary');
+  const wrongHtml = wrongTerms.length
+    ? `<div class="wrong-list">${wrongTerms.map(v=>`<div class="wrong-item"><b>${escapeHtml(v.term)}</b> = ${escapeHtml(v.meaning)}<br><span style="color:#667085">힌트: ${escapeHtml(v.hint)}</span></div>`).join('')}</div>`
+    : `<p class="mode-note">오답 없음. 바로 전체 단어로 넘어가도 됩니다.</p>`;
+  summary.innerHTML = `
+    <h2>채점 결과</h2>
+    <div class="bigscore">${correct} / ${total}점 · ${pct}%</div>
+    <p style="line-height:1.7;font-weight:800;color:#4b5563">4등급 목표면 먼저 핵심 단어를 안정적으로 맞히는 게 중요합니다. 오답 단어만 다시 풀고, 마지막에 전체 단어로 한 번 더 돌리면 됩니다.</p>
+    ${wrongHtml}
+  `;
+  summary.classList.add('show');
+  summary.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function retryWrong(){
+  if(wrongTerms.length) startQuiz(wrongTerms);
+}
+
+function updateProgress(checked){
+  const cards = [...document.querySelectorAll('.qcard')];
+  let done = 0;
+  if(checked){
+    done = cards.filter(c=>c.querySelector('.result.show.good')).length;
+  }else{
+    done = cards.filter(c=>c.querySelector('.option.selected')).length;
+  }
+  document.getElementById('score').textContent = `${done} / ${cards.length}`;
+  document.getElementById('bar').style.width = cards.length ? `${done/cards.length*100}%` : '0%';
+}
+
+function toggleWordbook(){
+  const panel = document.getElementById('wordbookPanel');
+  panel.classList.toggle('hidden');
+  if(!panel.classList.contains('hidden')) renderWordbook();
+}
+
+function renderWordbook(){
+  const wb = document.getElementById('wordbook');
+  wb.innerHTML = VOCAB.map(v=>`<div class="word"><b>${escapeHtml(v.term)}</b><br>${escapeHtml(v.meaning)}<br><span style="color:#667085;font-size:13px">${escapeHtml(v.hint)}</span></div>`).join('');
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function escapeAttr(s){ return escapeHtml(s).replace(/"/g,'&quot;'); }
+
+startQuiz();
+</script>
+</body>
+</html>
