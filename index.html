@@ -3,54 +3,94 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>단어 뜻 고르기 시험 인덱스</title>
+<title>단어 학습 자료 인덱스</title>
 <style>
-:root{--bg:#f6f1e8;--paper:#fffaf2;--ink:#172033;--muted:#667085;--line:#dfd3c3;--accent:#7c4a28;--gold:#d7a33d;}
+:root{--bg:#f6f1e8;--paper:#fffaf2;--ink:#172033;--muted:#667085;--line:#dfd3c3;--accent:#7c4a28;--gold:#d7a33d;--green:#2f7d55;--blue:#2f5f8f;}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:radial-gradient(circle at top left,rgba(215,163,61,.25),transparent 34rem),linear-gradient(180deg,#fbf7ef,#f3ecdf);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo","Segoe UI",sans-serif}
-header{border-bottom:1px solid var(--line);background:rgba(255,250,242,.56)}.wrap{max-width:1080px;margin:0 auto;padding:28px 18px}
+header{border-bottom:1px solid var(--line);background:rgba(255,250,242,.56)}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 18px}
 h1{margin:0;font-size:clamp(28px,4vw,44px);letter-spacing:-.055em}.sub{margin:10px 0 0;color:var(--muted);line-height:1.7;font-weight:700}
 main{max-width:1080px;margin:0 auto;padding:22px 18px 44px}
+.section-title{margin:26px 0 14px;font-size:24px;letter-spacing:-.04em}.section-title:first-child{margin-top:0}
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .card{display:block;text-decoration:none;color:inherit;background:rgba(255,250,242,.96);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 10px 24px rgba(45,35,20,.1);transition:transform .12s,border-color .12s,box-shadow .12s}
-.card:hover{transform:translateY(-2px);border-color:#c9a878;box-shadow:0 14px 28px rgba(45,35,20,.14)}.tag{display:inline-block;background:#efe0ca;color:#5b3a1a;border-radius:999px;padding:5px 10px;font-size:13px;font-weight:950;margin-bottom:10px}
-.card h2{margin:0 0 8px;font-size:23px;letter-spacing:-.04em}.card p{margin:0 0 12px;color:#4b5563;line-height:1.6;font-weight:750}.filename{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px;color:#6b4d2b}
+.card:hover{transform:translateY(-2px);border-color:#c9a878;box-shadow:0 14px 28px rgba(45,35,20,.14)}
+.tag{display:inline-block;background:#efe0ca;color:#5b3a1a;border-radius:999px;padding:5px 10px;font-size:13px;font-weight:950;margin-bottom:10px}.tag.quiz{background:#e5f0ff;color:#234f7a}.tag.print{background:#e4f6ec;color:#246044}
+.card h2{margin:0 0 8px;font-size:23px;letter-spacing:-.04em}.card p{margin:0 0 12px;color:#4b5563;line-height:1.6;font-weight:750}.filename{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:13px;color:#6b4d2b;word-break:break-all}
 .notice{margin-top:18px;background:#fff6d8;border:1px solid #edca73;color:#5b3a1a;border-radius:18px;padding:14px 16px;line-height:1.65;font-weight:850}
 @media(max-width:850px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <header><div class="wrap">
-<h1>단어 뜻 고르기 시험 인덱스</h1>
-<p class="sub">영어 단어를 보고 알맞은 한글 뜻을 고르는 시험만 모아둔 인덱스입니다. 파일들을 같은 폴더에 두고 index.html을 열면 됩니다.</p>
+<h1>단어 학습 자료 인덱스</h1>
+<p class="sub">단어 뜻 고르기 시험과 프린트용 단어장을 모아둔 인덱스입니다. 파일들을 같은 폴더에 두고 index.html을 열면 됩니다.</p>
 </div></header>
 <main>
-<div class="grid">
 
-      <a class="card" href="environmental_art_vocab_meaning_quiz_fixed.html">
-        <span class="tag">단어 시험</span>
-        <h2>Environmental Art</h2>
-        <p>환경 예술 본문 단어 뜻 고르기</p>
-        <div class="filename">environmental_art_vocab_meaning_quiz_fixed.html</div>
-      </a>
-    
-      <a class="card" href="netherlands_vocab_meaning_quiz.html">
-        <span class="tag">단어 시험</span>
-        <h2>A Trip to the Netherlands</h2>
-        <p>네덜란드 여행 본문 단어 뜻 고르기</p>
-        <div class="filename">netherlands_vocab_meaning_quiz.html</div>
-      </a>
-    
-      <a class="card" href="banksy_port_talbot_vocab_quiz.html">
-        <span class="tag">단어 시험</span>
-        <h2>Banksy Port Talbot</h2>
-        <p>Banksy와 대기 오염 본문 단어 뜻 고르기</p>
-        <div class="filename">banksy_port_talbot_vocab_quiz.html</div>
-      </a>
-    
+<h2 class="section-title">프린트용 단어장</h2>
+<div class="grid">
+  <a class="card" href="printable_vocab_book.pdf" target="_blank">
+    <span class="tag print">PDF 단어장</span>
+    <h2>30 · 31 · 33 · 35 통합 단어장</h2>
+    <p>학생이 인쇄해서 외울 수 있는 영어 / 뜻 / 체크칸 단어장입니다.</p>
+    <div class="filename">printable_vocab_book.pdf</div>
+  </a>
 </div>
+
+<h2 class="section-title">최근 추가 단어 시험</h2>
+<div class="grid">
+  <a class="card" href="30.html">
+    <span class="tag quiz">단어 시험</span>
+    <h2>30번 지문 단어</h2>
+    <p>생태학적 오류, 추론, 인과관계 관련 단어 뜻 고르기</p>
+    <div class="filename">30.html</div>
+  </a>
+  <a class="card" href="31.html">
+    <span class="tag quiz">단어 시험</span>
+    <h2>31번 지문 단어</h2>
+    <p>기업가, 가격 전략, 시장 수용 관련 단어 뜻 고르기</p>
+    <div class="filename">31.html</div>
+  </a>
+  <a class="card" href="33.html">
+    <span class="tag quiz">단어 시험</span>
+    <h2>33번 지문 단어</h2>
+    <p>종, 진화, 번식 전략 관련 단어 뜻 고르기</p>
+    <div class="filename">33.html</div>
+  </a>
+  <a class="card" href="35.html">
+    <span class="tag quiz">단어 시험</span>
+    <h2>35번 지문 단어</h2>
+    <p>Bartlett의 기억 실험, 도식, 회상 관련 단어 뜻 고르기</p>
+    <div class="filename">35.html</div>
+  </a>
+</div>
+
+<h2 class="section-title">기존 단어 시험</h2>
+<div class="grid">
+  <a class="card" href="environmental_art_vocab_meaning_quiz_fixed.html">
+    <span class="tag">단어 시험</span>
+    <h2>Environmental Art</h2>
+    <p>환경 예술 본문 단어 뜻 고르기</p>
+    <div class="filename">environmental_art_vocab_meaning_quiz_fixed.html</div>
+  </a>
+  <a class="card" href="netherlands_vocab_meaning_quiz.html">
+    <span class="tag">단어 시험</span>
+    <h2>A Trip to the Netherlands</h2>
+    <p>네덜란드 여행 본문 단어 뜻 고르기</p>
+    <div class="filename">netherlands_vocab_meaning_quiz.html</div>
+  </a>
+  <a class="card" href="banksy_port_talbot_vocab_quiz.html">
+    <span class="tag">단어 시험</span>
+    <h2>Banksy Port Talbot</h2>
+    <p>Banksy와 대기 오염 본문 단어 뜻 고르기</p>
+    <div class="filename">banksy_port_talbot_vocab_quiz.html</div>
+  </a>
+</div>
+
 <div class="notice">
-깃허브에 올릴 때는 이 파일 이름을 <b>index.html</b>로 바꾸고, 위 3개 HTML 파일을 같은 폴더에 같이 업로드하면 됩니다.
+깃허브에 올릴 때는 이 파일 이름을 <b>index.html</b>로 두고, <b>30.html, 31.html, 33.html, 35.html, printable_vocab_book.pdf</b>를 같은 폴더에 같이 업로드하면 됩니다. 기존 3개 시험 파일도 같은 폴더에 있으면 아래 기존 링크가 그대로 작동합니다.
 </div>
 </main>
 </body>

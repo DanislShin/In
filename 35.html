@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>단어 퀴즈</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 20px;
+      }
+      #options button {
+        display: block;
+        width: 220px;
+        margin: 10px auto;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .active {
+        background-color: #4caf50;
+        color: white;
+      }
+      .correct {
+        background-color: #add8e6;
+      }
+      .wrong {
+        background-color: #ffcccb;
+      }
+      #progress {
+        margin-top: 20px;
+        color: #666;
+      }
+      #wrongList {
+        margin-top: 30px;
+        text-align: left;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>단어 학습 퀴즈</h2>
+
+    <div>
+      <button id="modeMeaning" class="active">뜻 맞추기</button>
+      <button id="modeListen">듣고 맞추기</button>
+    </div>
+
+    <hr />
+
+    <h1 id="prompt">단어</h1>
+    <button id="play" style="display: none">🔊 다시 듣기</button>
+
+    <div id="options"></div>
+
+    <div id="status"></div>
+    <div id="progress"></div>
+
+    <br />
+    <button id="reset">처음부터 다시</button>
+    <button id="next">건너뛰기</button>
+
+    <div id="wrongList"></div>
+
+    <script>
+      const WORDS = [
+        { en: "British psychologist", ko: "영국 심리학자" },
+        { en: "ask O to V", ko: "O에게 V하라고 요청하다" },
+        { en: "folktale", ko: "민담, 설화" },
+        { en: "recall", ko: "떠올리다, 회상하다" },
+        { en: "at a later date", ko: "나중에" },
+
+        { en: "as you might guess", ko: "짐작할 수 있듯이" },
+        { en: "unfamiliar", ko: "낯선" },
+        { en: "familiar", ko: "익숙한" },
+        { en: "as well as", ko: "~만큼 잘" },
+
+        { en: "surprisingly", ko: "놀랍게도" },
+        { en: "however", ko: "하지만" },
+        { en: "error", ko: "오류" },
+        { en: "memory", ko: "기억" },
+        { en: "random", ko: "무작위적인" },
+
+        { en: "rather", ko: "오히려" },
+        { en: "subject", ko: "피실험자" },
+        { en: "rewrite", ko: "다시 쓰다" },
+        { en: "similar parts", ko: "비슷한 부분들" },
+        { en: "in one's own mind", ko: "마음속에서" },
+        { en: "particularly", ko: "특히" },
+        { en: "make sense to N", ko: "N에게 이해가 되다" },
+
+        { en: "conclude", ko: "결론 내리다" },
+        { en: "when facing problems", ko: "문제에 직면할 때" },
+        { en: "draw upon", ko: "활용하다" },
+        { en: "mental schemata", ko: "정신적 도식" },
+        { en: "shelf", ko: "선반" },
+        { en: "stored knowledge", ko: "저장된 지식" },
+        { en: "fill in", ko: "채우다" },
+        { en: "minor gap", ko: "작은 빈틈" },
+
+        { en: "therefore", ko: "그러므로" },
+        { en: "remembering", ko: "기억하기" },
+        { en: "imaginative process", ko: "상상적 과정" },
+        { en: "involve", ko: "포함하다" },
+        { en: "build upon", ko: "~을 바탕으로 쌓다" },
+        { en: "past experiences", ko: "과거 경험들" },
+      ];
+
+      let mode = "meaning";
+      let index = 0;
+      let shuffled = [];
+      let correctCount = 0;
+      let answered = false;
+      let wrongList = [];
+
+      function shuffle(arr) {
+        return arr.sort(() => Math.random() - 0.5);
+      }
+
+      function setMode(m) {
+        mode = m;
+        document
+          .getElementById("modeMeaning")
+          .classList.toggle("active", m === "meaning");
+        document
+          .getElementById("modeListen")
+          .classList.toggle("active", m === "listen");
+        document.getElementById("play").style.display =
+          m === "listen" ? "inline-block" : "none";
+        reset();
+      }
+
+      function reset() {
+        shuffled = shuffle([...WORDS]);
+        index = 0;
+        correctCount = 0;
+        answered = false;
+        wrongList = [];
+        document.getElementById("wrongList").style.display = "none";
+        load();
+      }
+
+      function speak(text) {
+        if (!window.speechSynthesis) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
+
+      function updateProgress() {
+        const totalPlayed = index + (answered ? 1 : 0);
+        const percent =
+          totalPlayed === 0
+            ? 0
+            : Math.round((correctCount / totalPlayed) * 100);
+        document.getElementById("progress").innerText = `${index + 1} / ${
+          shuffled.length
+        } | 정답 ${correctCount} | ${percent}%`;
+      }
+
+      function load() {
+        const q = shuffled[index];
+        answered = false;
+        document.getElementById("status").innerText = "";
+        document.getElementById("options").innerHTML = "";
+        document.getElementById("prompt").innerText =
+          mode === "meaning" ? q.en : "🔈 발음 듣고 맞추기";
+        if (mode === "listen") speak(q.en);
+        updateProgress();
+
+        const choices = shuffle([
+          q.ko,
+          ...shuffle(WORDS.filter((w) => w.ko !== q.ko))
+            .slice(0, 3)
+            .map((w) => w.ko),
+        ]);
+
+        choices.forEach((c) => {
+          const b = document.createElement("button");
+          b.innerText = c;
+          b.onclick = () => {
+            if (answered) return;
+            answered = true;
+
+            if (c === q.ko) {
+              b.classList.add("correct");
+              correctCount++;
+              document.getElementById("status").innerText = "정답!";
+            } else {
+              b.classList.add("wrong");
+              document.getElementById("status").innerText =
+                "오답! 정답: " + q.ko;
+
+              wrongList.push({
+                question: q.en,
+                correct: q.ko,
+                chosen: c,
+              });
+            }
+
+            updateProgress();
+
+            setTimeout(() => {
+              if (index < shuffled.length - 1) {
+                index++;
+                load();
+              } else {
+                showWrongList();
+              }
+            }, 700);
+          };
+
+          document.getElementById("options").appendChild(b);
+        });
+      }
+
+      function showWrongList() {
+        const box = document.getElementById("wrongList");
+        box.style.display = "block";
+
+        if (wrongList.length === 0) {
+          box.innerHTML = "<h3>🎉 전부 정답!</h3>";
+          return;
+        }
+
+        let html = "<h3>❌ 오답 리스트</h3><ul>";
+        wrongList.forEach((w) => {
+          html += `<li>
+            <strong>${w.question}</strong><br/>
+            선택: ${w.chosen} → 정답: ${w.correct}
+          </li><br/>`;
+        });
+        html += "</ul>";
+
+        box.innerHTML = html;
+      }
+
+      document.getElementById("next").onclick = () => {
+        if (index < shuffled.length - 1) {
+          index++;
+          load();
+        }
+      };
+
+      document.getElementById("play").onclick = () => speak(shuffled[index].en);
+      document.getElementById("modeMeaning").onclick = () => setMode("meaning");
+      document.getElementById("modeListen").onclick = () => setMode("listen");
+      document.getElementById("reset").onclick = reset;
+
+      reset();
+    </script>
+  </body>
+</html>
