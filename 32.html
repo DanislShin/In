@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>단어 퀴즈</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 20px;
+      }
+      #options button {
+        display: block;
+        width: 220px;
+        margin: 10px auto;
+        padding: 10px;
+        cursor: pointer;
+      }
+      .active {
+        background-color: #4caf50;
+        color: white;
+      }
+      .correct {
+        background-color: #add8e6;
+      }
+      .wrong {
+        background-color: #ffcccb;
+      }
+      #progress {
+        margin-top: 20px;
+        color: #666;
+      }
+      #wrongList {
+        margin-top: 30px;
+        text-align: left;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 8px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>단어 학습 퀴즈</h2>
+
+    <div>
+      <button id="modeMeaning" class="active">뜻 맞추기</button>
+      <button id="modeListen">듣고 맞추기</button>
+    </div>
+
+    <hr />
+
+    <h1 id="prompt">단어</h1>
+    <button id="play" style="display: none">🔊 다시 듣기</button>
+
+    <div id="options"></div>
+
+    <div id="status"></div>
+    <div id="progress"></div>
+
+    <br />
+    <button id="reset">처음부터 다시</button>
+    <button id="next">건너뛰기</button>
+
+    <div id="wrongList"></div>
+
+    <script>
+      const WORDS = [
+        { en: "entrepreneur", ko: "기업가" },
+        { en: "put in", ko: "쏟아붓다, 투입하다" },
+        { en: "tremendous", ko: "엄청난" },
+        { en: "amounts of", ko: "많은 양의" },
+        { en: "effort", ko: "노력" },
+        { en: "create", ko: "만들다" },
+        { en: "launch", ko: "출시하다" },
+        { en: "make the mistake of V-ing", ko: "V하는 실수를 하다" },
+        { en: "overprice", ko: "가격을 지나치게 높게 매기다" },
+
+        { en: "care deeply about", ko: "~을 깊이 아끼다" },
+        { en: "theirs", ko: "그들의 것" },
+        { en: "sense of ownership", ko: "소유감" },
+        { en: "distort", ko: "왜곡하다" },
+        { en: "perception", ko: "인식" },
+        { en: "value", ko: "가치" },
+
+        { en: "while", ko: "~이지만" },
+        { en: "realize", ko: "깨닫다" },
+        { en: "initial price", ko: "초기 가격" },
+        { en: "not all", ko: "모두가 ~인 것은 아니다" },
+        { en: "be willing to ", ko: "기꺼이 ~하다" },
+        { en: "drop prices", ko: "가격을 낮추다" },
+        { en: "attractive", ko: "매력적인" },
+
+        { en: "costly", ko: "값비싼, 대가가 큰" },
+        { en: "mistake", ko: "실수" },
+        { en: "lead to", ko: "~로 이어지다" },
+        { en: "failure", ko: "실패" },
+        { en: "business", ko: "사업" },
+
+        { en: "priority", ko: "우선순위" },
+        { en: "sufficient", ko: "충분한" },
+        { en: "market adoption", ko: "시장 채택, 시장 수용" },
+        { en: "as soon as possible", ko: "가능한 한 빨리" },
+        { en: "be ready to V", ko: "V할 준비가 되어 있다" },
+        { en: "sacrifice", ko: "희생하다" },
+        { en: "initial", ko: "초기의" },
+        { en: "profit", ko: "이익" },
+        { en: "achieve", ko: "달성하다" },
+        { en: "aim", ko: "목표" },
+
+        { en: "once", ko: "일단 ~하면" },
+        { en: "sales volume", ko: "판매량" },
+        { en: "increase", ko: "올리다, 증가시키다" },
+        { en: "maximize", ko: "극대화하다" },
+      ];
+      
+      let mode = "meaning";
+      let index = 0;
+      let shuffled = [];
+      let correctCount = 0;
+      let answered = false;
+      let wrongList = [];
+
+      function shuffle(arr) {
+        return arr.sort(() => Math.random() - 0.5);
+      }
+
+      function setMode(m) {
+        mode = m;
+        document
+          .getElementById("modeMeaning")
+          .classList.toggle("active", m === "meaning");
+        document
+          .getElementById("modeListen")
+          .classList.toggle("active", m === "listen");
+        document.getElementById("play").style.display =
+          m === "listen" ? "inline-block" : "none";
+        reset();
+      }
+
+      function reset() {
+        shuffled = shuffle([...WORDS]);
+        index = 0;
+        correctCount = 0;
+        answered = false;
+        wrongList = [];
+        document.getElementById("wrongList").style.display = "none";
+        load();
+      }
+
+      function speak(text) {
+        if (!window.speechSynthesis) return;
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "en-US";
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
+
+      function updateProgress() {
+        const totalPlayed = index + (answered ? 1 : 0);
+        const percent =
+          totalPlayed === 0
+            ? 0
+            : Math.round((correctCount / totalPlayed) * 100);
+        document.getElementById("progress").innerText = `${index + 1} / ${
+          shuffled.length
+        } | 정답 ${correctCount} | ${percent}%`;
+      }
+
+      function load() {
+        const q = shuffled[index];
+        answered = false;
+        document.getElementById("status").innerText = "";
+        document.getElementById("options").innerHTML = "";
+        document.getElementById("prompt").innerText =
+          mode === "meaning" ? q.en : "🔈 발음 듣고 맞추기";
+        if (mode === "listen") speak(q.en);
+        updateProgress();
+
+        const choices = shuffle([
+          q.ko,
+          ...shuffle(WORDS.filter((w) => w.ko !== q.ko))
+            .slice(0, 3)
+            .map((w) => w.ko),
+        ]);
+
+        choices.forEach((c) => {
+          const b = document.createElement("button");
+          b.innerText = c;
+          b.onclick = () => {
+            if (answered) return;
+            answered = true;
+
+            if (c === q.ko) {
+              b.classList.add("correct");
+              correctCount++;
+              document.getElementById("status").innerText = "정답!";
+            } else {
+              b.classList.add("wrong");
+              document.getElementById("status").innerText =
+                "오답! 정답: " + q.ko;
+
+              wrongList.push({
+                question: q.en,
+                correct: q.ko,
+                chosen: c,
+              });
+            }
+
+            updateProgress();
+
+            setTimeout(() => {
+              if (index < shuffled.length - 1) {
+                index++;
+                load();
+              } else {
+                showWrongList();
+              }
+            }, 700);
+          };
+
+          document.getElementById("options").appendChild(b);
+        });
+      }
+
+      function showWrongList() {
+        const box = document.getElementById("wrongList");
+        box.style.display = "block";
+
+        if (wrongList.length === 0) {
+          box.innerHTML = "<h3>🎉 전부 정답!</h3>";
+          return;
+        }
+
+        let html = "<h3>❌ 오답 리스트</h3><ul>";
+        wrongList.forEach((w) => {
+          html += `<li>
+            <strong>${w.question}</strong><br/>
+            선택: ${w.chosen} → 정답: ${w.correct}
+          </li><br/>`;
+        });
+        html += "</ul>";
+
+        box.innerHTML = html;
+      }
+
+      document.getElementById("next").onclick = () => {
+        if (index < shuffled.length - 1) {
+          index++;
+          load();
+        }
+      };
+
+      document.getElementById("play").onclick = () => speak(shuffled[index].en);
+      document.getElementById("modeMeaning").onclick = () => setMode("meaning");
+      document.getElementById("modeListen").onclick = () => setMode("listen");
+      document.getElementById("reset").onclick = reset;
+
+      reset();
+    </script>
+  </body>
+</html>
